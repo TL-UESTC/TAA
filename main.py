@@ -321,8 +321,8 @@ def main(tgt_dataset_name,
     tgt_model = get_model(model_name, tgt_field_dims, tgt_numerical_num, task_num, expert_num, embed_dim).to(device)
     tgt_optimizer = torch.optim.Adam(params=tgt_model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     src_optimizer = torch.optim.Adam(params=src_model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    src_model.load_state_dict(torch.load(src_read_path))
-    tgt_model.load_state_dict(torch.load(tgt_read_path))
+    src_model.load_state_dict(torch.load(src_read_path,map_location=torch.device(args.device)))
+    tgt_model.load_state_dict(torch.load(tgt_read_path,map_location=torch.device(args.device)))
 
     
     total_time = 0
@@ -376,7 +376,7 @@ def main(tgt_dataset_name,
     print("Total time:")
     print(total_epoch,"epoch ",round(total_time,4),"min")
 
-    tgt_model.load_state_dict(torch.load(save_path))
+    tgt_model.load_state_dict(torch.load(save_path,map_location=torch.device(args.device)))
     auc_results, loss_results = [], []
     test_datas = pd.read_csv(os.path.join(dataset_path, tgt_dataset_name) + '/test.csv', chunksize=batch_size * chunksize)
     for i, test_data in enumerate(test_datas):
